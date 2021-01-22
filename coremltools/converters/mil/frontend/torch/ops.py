@@ -2496,3 +2496,19 @@ def std(context, node):
 def copy_(context, node):
     inputs = _get_inputs(context, node, expected=3)
     context.add(mb.identity(x=inputs[0], name=node.name))
+
+@register_torch_op
+def reflection_pad2d(context, node):
+    inputs = _get_inputs(context, node)
+    x = inputs[0]
+    torch_pad = inputs[1].val
+    pad = [torch_pad[2], torch_pad[3], torch_pad[0], torch_pad[1]]
+    context.add(mb.pad(x=x, pad=pad, mode='reflect'), node.name)
+
+@register_torch_op
+def reflection_pad1d(context, node):
+    inputs = _get_inputs(context, node)
+    x = inputs[0]
+    torch_pad = inputs[1].val
+    pad = [0, 0, torch_pad[0], torch_pad[1]]
+    context.add(mb.pad(x=x, pad=pad, mode='reflect'), node.name)
